@@ -1,0 +1,7 @@
+port: 8090
+server_host: localhost
+mongo_host: localhost
+mongo_port: 27017
+mongo_user: root
+mongo_password: 123
+mongo_database: user_management
