@@ -1,23 +1,28 @@
 package main
 
 import (
-	"io/ioutil"
+	"fmt"
 	"log"
 	"user-management/config"
-
-	yaml "gopkg.in/yaml.v2"
+	"user-management/database/mongo"
 )
 
 func main() {
-	var config config.Config
-
-	content, err := ioutil.ReadFile("config.yaml")
+	config, err := config.GetConfig("config.yaml")
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("cannot read configuration file: %v", err)
 	}
 
-	err = yaml.Unmarshal(content, &config)
+	mongodb, err := mongo.Connect(config.MongoUser,
+		config.MongoPassword, config.MongoHost, config.MongoPort)
 	if err != nil {
-		log.Fatalf("cannot unmarshal data: %v", err)
+		log.Fatalf("cannot connect to mongodb: %v", err)
 	}
+
+	buildInfo, err := mongodb.BuildInfo()
+	if err != nil {
+		log.Fatalf("cannot get build info: %v", err)
+	}
+	fmt.Println(buildInfo.Version)
+
 }
