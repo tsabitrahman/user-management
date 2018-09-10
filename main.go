@@ -30,6 +30,10 @@ func main() {
 
 	r := mux.NewRouter()
 	r.HandleFunc("/user", controller.GetAllUsers).Methods("GET")
+	r.HandleFunc("/user/{id}", controller.GetByID).Methods("GET")
+	r.HandleFunc("/user", controller.CreateUser).Methods("POST")
+	r.HandleFunc("/user", controller.UpdateUser).Methods("PUT")
+	r.HandleFunc("/user/{id}", controller.DeleteUser).Methods("DELETE")
 	if err := http.ListenAndServe(addr, r); err != nil {
 		log.Fatal(err)
 	}
