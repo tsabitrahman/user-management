@@ -10,18 +10,23 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-func (c *Controller) GetAllUsers(w http.ResponseWriter, r *http.Request) {
-	var users []model.User
+func (c *Controller) UpdateUser(w http.ResponseWriter, r *http.Request) {
+	var user model.User
 	config, _ := config.GetConfig("config.yaml")
+
+	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 
 	db := c.MongoDB.DB(config.MongoDatabase).C("user")
 
-	err := db.Find(bson.M{}).All(&users)
+	err := db.Update(bson.M{"_id": user.ID}, &user)
 	if err != nil {
 		fmt.Printf("error %v", err)
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(200)
-	json.NewEncoder(w).Encode(users)
+	json.NewEncoder(w).Encode(user)
 }

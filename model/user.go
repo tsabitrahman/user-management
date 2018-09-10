@@ -1,8 +1,6 @@
 package model
 
 import (
-	"time"
-
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -13,5 +11,5 @@ type User struct {
 	Name       string        `bson:"name" json:"name"`
 	Password   string        `bson:"password" json:"password"`
 	Role       string        `bson:"role" json:"role"`
-	Created_At *time.Time    `bson:"created_at" json:"created_at"`
+	Created_At string        `bson:"created_at" json:"created_at"`
 }
