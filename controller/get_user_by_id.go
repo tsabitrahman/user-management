@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"user-management/config"
-	"user-management/database/mongo"
 	"user-management/model"
 
 	"github.com/gorilla/mux"
@@ -16,13 +15,10 @@ func (c *Controller) GetByID(w http.ResponseWriter, r *http.Request) {
 	var user model.User
 	config, _ := config.GetConfig("config.yaml")
 
-	session, _ := mongo.Connect(config.MongoUser, config.MongoPassword, config.MongoHost, config.MongoPort)
-	defer session.Close()
-
 	vars := mux.Vars(r)
 	id := vars["id"]
 
-	db := session.DB(config.MongoDatabase).C("user")
+	db := c.MongoDB.DB(config.MongoDatabase).C("user")
 	var selector = bson.M{"_id": bson.ObjectIdHex(id)}
 	err := db.Find(selector).One(&user)
 	if err != nil {
