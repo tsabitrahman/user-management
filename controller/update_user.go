@@ -7,6 +7,7 @@ import (
 	"user-management/config"
 	"user-management/model"
 
+	"github.com/gorilla/mux"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -18,10 +19,12 @@ func (c *Controller) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-
+	vars := mux.Vars(r)
+	id := vars["id"]
 	db := c.MongoDB.DB(config.MongoDatabase).C("user")
 
-	err := db.Update(bson.M{"_id": user.ID}, &user)
+	var selector = bson.M{"_id": bson.ObjectIdHex(id)}
+	err := db.Update((selector), &user)
 	if err != nil {
 		fmt.Printf("error %v", err)
 	}
