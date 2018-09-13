@@ -29,6 +29,7 @@ func main() {
 	addr := fmt.Sprintf(":%s", config.Port)
 
 	r := mux.NewRouter()
+	r.HandleFunc("/signin", controller.Signin).Methods("POST")
 	r.HandleFunc("/user", controller.GetAllUsers).Methods("GET")
 	r.HandleFunc("/user/{id}", controller.GetByID).Methods("GET")
 	r.HandleFunc("/user", controller.CreateUser).Methods("POST")

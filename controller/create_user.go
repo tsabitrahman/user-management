@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"crypto/sha1"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -21,6 +22,12 @@ func (c *Controller) CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	db := c.MongoDB.DB(config.MongoDatabase).C("user")
 	user.ID = bson.NewObjectId()
+	pass := user.Password
+	var sha = sha1.New()
+	sha.Write([]byte(pass))
+	var encrypted = sha.Sum(nil)
+	var encryptedString = fmt.Sprintf("%x", encrypted)
+	user.Password = encryptedString
 	err := db.Insert(&user)
 	if err != nil {
 		fmt.Printf("error %v", err)
