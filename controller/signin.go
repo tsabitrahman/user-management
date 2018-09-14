@@ -41,11 +41,13 @@ func (c *Controller) Signin(w http.ResponseWriter, r *http.Request) {
 	b1, _ := json.Marshal(&user.Password)
 	s1 := string(b1)
 
-	fmt.Println(s)
-	fmt.Println(s1)
 	if s == s1 {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte(`{"message":"success"}`))
+	} else {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(401)
+		w.Write([]byte(`{"message":"wrong password"}`))
 	}
 }
